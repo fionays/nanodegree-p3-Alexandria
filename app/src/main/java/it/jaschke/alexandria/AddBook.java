@@ -223,9 +223,6 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
             String barcode =data.getStringExtra(SCAN_CONTENTS);
             ean.setText(barcode);
             startBookIntent(barcode);
-
-            // Test
-            Log.v(LOG_TAG, "The book cover after scan is " + rootView.findViewById(R.id.bookCover).getVisibility());
         }
 
     }
