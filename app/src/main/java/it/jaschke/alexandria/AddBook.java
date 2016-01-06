@@ -29,6 +29,8 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     private EditText ean;
     private final int LOADER_ID = 1;
     private View rootView;
+    private View emptyView;
+    private View tryAgain;
     private final String EAN_CONTENT="eanContent";
     private static final int SCAN_REQUEST = 9001;
     private static final String SCAN_FORMAT = "scanFormat";
@@ -55,6 +57,8 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
         rootView = inflater.inflate(R.layout.fragment_add_book, container, false);
         ean = (EditText) rootView.findViewById(R.id.ean);
+        emptyView = rootView.findViewById(R.id.no_network);
+        tryAgain = rootView.findViewById(R.id.try_again_button);
 
         ean.addTextChangedListener(new TextWatcher() {
             @Override
@@ -69,12 +73,12 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
             @Override
             public void afterTextChanged(Editable s) {
-                String ean =s.toString();
+                String ean = s.toString();
                 //catch isbn10 numbers
-                if(ean.length()==10 && !ean.startsWith("978")){
-                    ean="978"+ean;
+                if (ean.length() == 10 && !ean.startsWith("978")) {
+                    ean = "978" + ean;
                 }
-                if(ean.length()<13){
+                if (ean.length() < 13) {
                     clearFields();
                     return;
                 }
@@ -83,6 +87,13 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
             }
         });
 
+        tryAgain.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                String barcode = ean.getText().toString();
+                startBookIntent(barcode);
+            }
+        });
         rootView.findViewById(R.id.scan_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,12 +109,10 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 //
 //                Toast toast = Toast.makeText(context, text, duration);
 //                toast.show();
-
                 // Using ZXing library from https://github.com/dm77/barcodescanner
                 // Start ScannerActivity
                 Intent scannerIntent = new Intent(getActivity(), ScannerActivity.class);
                 startActivityForResult(scannerIntent, SCAN_REQUEST);
-
             }
         });
 
@@ -214,6 +223,9 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
             String barcode =data.getStringExtra(SCAN_CONTENTS);
             ean.setText(barcode);
             startBookIntent(barcode);
+
+            // Test
+            Log.v(LOG_TAG, "The book cover after scan is " + rootView.findViewById(R.id.bookCover).getVisibility());
         }
 
     }
@@ -223,6 +235,18 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
      * @param barcode ISBN used to start a book intent
      */
     private void startBookIntent(String barcode) {
+        // Check the network
+        if (!Utility.isNetworkAvailable(getActivity())) {
+
+            clearFields();
+            emptyView.setVisibility(View.VISIBLE);
+            tryAgain.setVisibility(View.VISIBLE);
+            return;
+        }
+
+        emptyView.setVisibility(View.INVISIBLE);
+        tryAgain.setVisibility(View.INVISIBLE);
+
         Intent bookIntent = new Intent(getActivity(), BookService.class);
         bookIntent.putExtra(BookService.EAN, barcode);
         bookIntent.setAction(BookService.FETCH_BOOK);

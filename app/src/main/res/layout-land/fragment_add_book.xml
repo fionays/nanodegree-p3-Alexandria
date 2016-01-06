@@ -123,9 +123,31 @@
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_gravity="bottom"
                 />
-
-
         </LinearLayout>
+    </RelativeLayout>
 
+    <!--No network state-->
+    <RelativeLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/no_network"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:text="@string/no_network_state"
+            android:visibility="invisible"/>
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/try_again_button"
+            android:id="@+id/try_again_button"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="62dp"
+            android:visibility="invisible"/>
     </RelativeLayout>
 </FrameLayout>

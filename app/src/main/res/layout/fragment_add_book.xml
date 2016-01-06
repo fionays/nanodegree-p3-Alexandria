@@ -126,4 +126,34 @@
         </LinearLayout>
 
     </RelativeLayout>
+
+    <!--No network state-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/no_network"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/no_network_state"
+            android:visibility="invisible"
+            android:layout_gravity="center_horizontal"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/try_again_button"
+            android:id="@+id/try_again_button"
+            android:layout_below="@+id/no_network"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="53dp"
+            android:visibility="invisible"/>
+
+    </RelativeLayout>
+
 </FrameLayout>
